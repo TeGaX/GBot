@@ -14,7 +14,7 @@ subprocess.run(
     ],
     stdout=subprocess.PIPE,
 )
-/*subprocess.run(
+"""subprocess.run(   # NOT A DOCUMENTATION. TEMPORARY
     [
         "git",
         "remote",
@@ -77,7 +77,7 @@ if len(sys.argv) == 4:
     ],
     stdout=subprocess.PIPE,
     )
-print("Your Bot is up-to-date. Bot Spinning up!")*/
+print("Your Bot is up-to-date. Bot Spinning up!")"""
 import logging
 from sqlalchemy import create_engine
 from telethon import TelegramClient, events
