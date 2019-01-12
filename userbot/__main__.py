@@ -9,11 +9,11 @@ from userbot import LOGS, BRAIN_CHECKER
 
 '''db = sqlite3.connect("brains.check")
 cursor = db.cursor()
-cursor.execute("""SELECT * FROM BRAIN1""")'''
+cursor.execute("""SELECT * FROM BRAIN1""")
 all_rows = cursor.fetchall()
 for i in all_rows:
     BRAIN_CHECKER.append(i[0])
-db.close()
+db.close()'''
 bot.start()
 import importlib
 from userbot.modules import ALL_MODULES
