@@ -14,7 +14,11 @@ subprocess.run(
     ],
     stdout=subprocess.PIPE,
 )
+<<<<<<< HEAD
 """subprocess.run(   # NOT A DOCUMENTATION. TEMPORARY
+=======
+/*subprocess.run(
+>>>>>>> disable updates
     [
         "git",
         "remote",
