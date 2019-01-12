@@ -4,7 +4,8 @@ import sys, os
 import dotenv
 dotenv.load_dotenv("config.env")
 BUILD_CHOICE=os.environ.get("BUILD_CHOICE","stable")
-subprocess.run(["rm", "-rf", "brains.check"], stdout=subprocess.PIPE)
+'''subprocess.run(["rm", "-rf", "brains.check"], 
+stdout=subprocess.PIPE)
 subprocess.run(
     [
         "curl",
@@ -14,11 +15,7 @@ subprocess.run(
     ],
     stdout=subprocess.PIPE,
 )
-<<<<<<< HEAD
-"""subprocess.run(   # NOT A DOCUMENTATION. TEMPORARY
-=======
-/*subprocess.run(
->>>>>>> disable updates
+subprocess.run(   # NOT A DOCUMENTATION. TEMPORARY
     [
         "git",
         "remote",
@@ -81,7 +78,7 @@ if len(sys.argv) == 4:
     ],
     stdout=subprocess.PIPE,
     )
-print("Your Bot is up-to-date. Bot Spinning up!")"""
+print("Your Bot is up-to-date. Bot Spinning up!")'''
 import logging
 from sqlalchemy import create_engine
 from telethon import TelegramClient, events
