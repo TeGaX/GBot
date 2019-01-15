@@ -17,7 +17,7 @@ async def typewriter(e):
         sleep_time = 0.3
         index = 1
         old_text = ''
-        msg = await e.reply('|')
+        msg = await e.edit('|')
         await asyncio.sleep(sleep_time)
         while old_text != message:
             old_text = message[:index]
