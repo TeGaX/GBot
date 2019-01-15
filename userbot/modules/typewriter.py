@@ -21,5 +21,3 @@ async def typewriter(event):
         await asyncio.sleep(sleep_time);
         await msg.edit('`%s`' % (old_text.strip()))
         await asyncio.sleep(sleep_time)
-
-client.run_until_disconnected() 
