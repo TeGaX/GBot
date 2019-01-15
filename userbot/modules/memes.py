@@ -21,7 +21,7 @@ async def kek(e):
 @bot.on(events.MessageEdited(outgoing=True, pattern="^-_-$"))
 async def lol(e):
     t = "-_-"
-    for j in range(20):
+    for j in range(40):
         t = t[:-1] + "_-"
         await e.edit(t)
 
