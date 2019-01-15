@@ -11,7 +11,7 @@ import time
 @bot.on(events.MessageEdited(outgoing=True, pattern="^:/$"))
 async def kek(e):
     uio = ["/", "\\"]
-    for i in range(1, 15):
+    for i in range(1, 30):
         time.sleep(0.3)
         await e.edit(":" + uio[i % 2])
 
@@ -20,7 +20,7 @@ async def kek(e):
 @bot.on(events.MessageEdited(outgoing=True, pattern="^-_-$"))
 async def lol(e):
     t = "-_-"
-    for j in range(10):
+    for j in range(20):
         t = t[:-1] + "_-"
         await e.edit(t)
 

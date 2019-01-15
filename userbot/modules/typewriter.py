@@ -1,10 +1,9 @@
 from telethon import TelegramClient, events
+from userbot import bot
 import asyncio
 
-client = TelegramClient(name, api_id, api_hash)
-client.start(phone_number)
 
-@client.on(events.NewMessage(pattern='(?i)!type (.+)'))
+@bot.on(events.NewMessage(pattern='(?i)!type (.+)'))
 async def typewriter(event):
     sleep_time = 0.3
     text = event.pattern_match.group(1)
