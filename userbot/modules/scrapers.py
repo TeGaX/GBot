@@ -9,6 +9,7 @@ from userbot import bot, LOGGER, LOGGER_GROUP
 from gtts import gTTS
 import os,time
 from googletrans import Translator
+from lmgtfy import Lmgtfy
 
 langi = "en"
 
@@ -169,3 +170,18 @@ async def lang(e):
                 LOGGER_GROUP, "tts language changed to **" + langi + "**"
             )
             await e.edit("tts language changed to **" + langi + "**")
+
+@bot.on(events.NewMessage(pattern="^.lmgtfy", outgoing=True))
+@bot.on(events.MessageEdited(pattern="^.lmgtfy", outgoing=True))
+async def let_me_google_that_for_you():
+    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
+    lmgtfier = Lmgtfy()
+    textx = await e.get_reply_message()
+    message = e.text
+    if message[8:]:
+        message = str(message[8:])
+    elif textx:
+        message = str(textx.message)
+    reply_text = lmgtfier.lmgtfy_url(message)
+    await e.edit(reply_text)
+
