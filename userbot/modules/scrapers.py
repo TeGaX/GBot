@@ -9,7 +9,7 @@ from userbot import bot, LOGGER, LOGGER_GROUP
 from gtts import gTTS
 import os,time
 from googletrans import Translator
-from lmgtfy import Lmgtfy
+from lmgtfy import lmgtfy
 
 langi = "en"
 
@@ -173,16 +173,17 @@ async def lang(e):
 
 @bot.on(events.NewMessage(pattern="^.lmgtfy", outgoing=True))
 @bot.on(events.MessageEdited(pattern="^.lmgtfy", outgoing=True))
-async def let_me_google_that_for_you():
+async def let_me_google_that_for_you(e):
     if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-        lmgtfier = Lmgtfy()
         textx = await e.get_reply_message()
+        lmgtfyer = lmgtfy.Lmgtfy()
         message = e.text
         if message[8:]:
             message = str(message[8:])
+            await bot.send_message(e.chat_id, message)
         elif textx:
             message = str(textx.message)
-        reply_text = lmgtfier.lmgtfy_url(message)
+        reply_text = lmgtfyer.lmgtfy_url(message)
         await e.edit(reply_text)
         if LOGGER:
             await bot.send_message(
