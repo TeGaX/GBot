@@ -175,13 +175,17 @@ async def lang(e):
 @bot.on(events.MessageEdited(pattern="^.lmgtfy", outgoing=True))
 async def let_me_google_that_for_you():
     if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-    lmgtfier = Lmgtfy()
-    textx = await e.get_reply_message()
-    message = e.text
-    if message[8:]:
-        message = str(message[8:])
-    elif textx:
-        message = str(textx.message)
-    reply_text = lmgtfier.lmgtfy_url(message)
-    await e.edit(reply_text)
-
+        lmgtfier = Lmgtfy()
+        textx = await e.get_reply_message()
+        message = e.text
+        if message[8:]:
+            message = str(message[8:])
+        elif textx:
+            message = str(textx.message)
+        reply_text = lmgtfier.lmgtfy_url(message)
+        await e.edit(reply_text)
+        if LOGGER:
+            await bot.send_message(
+                LOGGER_GROUP,
+                "LMGTFY query " + match + " was executed successfully",
+            )
