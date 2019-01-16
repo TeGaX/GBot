@@ -180,7 +180,7 @@ async def let_me_google_that_for_you(e):
             message = str(message[8:])
         elif textx:
             message = str(textx.message)
-        reply_text = 'http://lmgtfy.com/?q=' + message.replace(" ", "+")
+        reply_text = 'http://lmgtfy.com/?s=g&iie=1&q=' + message.replace(" ", "+")
         await e.edit(reply_text)
         if LOGGER:
             await bot.send_message(
