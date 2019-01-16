@@ -181,8 +181,7 @@ async def let_me_google_that_for_you(e):
             await bot.send_message(e.chat_id, message)
         elif textx:
             message = str(textx.message)
-        reply_text = 'http://lmgtfy.com/?q=' + message.replace(" ", "+")
-        await e.edit(reply_text)
+        reply_text = 'http://lmgtfy.com/?s=g&iie=1&q=' + message.replace(" ", "+")
         if LOGGER:
             await bot.send_message(
                 LOGGER_GROUP,
