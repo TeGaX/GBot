@@ -6,6 +6,7 @@ from telethon import TelegramClient, events
 from spongemock import spongemock
 from fancy_text import fancy
 import time
+import asyncio
 
 
 @bot.on(events.NewMessage(outgoing=True, pattern="^:/$"))
@@ -400,7 +401,7 @@ async def bluetext(e):
         )
 
 
-@bot.on(events.NewMessage(pattern='^(?i).type'))
+@bot.on(events.NewMessage(outgoing=True, pattern='(?i).type'))
 async def typewriter(e):
     if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
         textx = await e.get_reply_message()
@@ -411,7 +412,7 @@ async def typewriter(e):
         elif textx:
             message = textx
             message = str(message.message)
-        sleep_time = 0.1
+        sleep_time = 0.001
         index = 1
         old_text = ''
         msg = await e.edit('|')
