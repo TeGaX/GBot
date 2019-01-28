@@ -9,6 +9,7 @@ from userbot import bot, LOGGER, LOGGER_GROUP
 from gtts import gTTS
 import os,time
 from googletrans import Translator
+import requests
 
 langi = "en"
 
@@ -185,5 +186,33 @@ async def let_me_google_that_for_you(e):
         if LOGGER:
             await bot.send_message(
                 LOGGER_GROUP,
-                "LMGTFY query " + match + " was executed successfully",
+                "LMGTFY query " + message + " was executed successfully",
             )
+
+@bot.on(events.NewMessage(pattern="^.dogbin", outgoing=True))
+@bot.on(events.MessageEdited(pattern="^.dogbin", outgoing=True))
+async def dogbin(e):
+    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
+        dogbin_url = "https://del.dog/"
+
+        textx = await e.get_reply_message()
+        message = e.text
+        if message[8:]:
+            message = str(message[8:])
+        elif textx:
+            message = str(textx.message)
+
+        r = requests.post(dogbin_url + "documents", data=message.encode('utf-8'))
+
+        result = r.json()
+
+        key = result['key']
+        reply_text = dogbin_url + key
+
+        await e.edit(reply_text)
+        if LOGGER:
+            await bot.send_message(
+                LOGGER_GROUP,
+                "Dogbin query " + message + " was executed successfully",
+            )
+        
