@@ -203,16 +203,12 @@ async def dogbin(e):
             message = str(textx.message)
 
         r = requests.post(dogbin_url + "documents", data=message.encode('utf-8'))
+        response = r.json()
+        key = response['key']
+        final_url = dogbin_url + key
 
-        result = r.json()
-
-        key = result['key']
-        reply_text = dogbin_url + key
-
-        await e.edit(reply_text)
-        if LOGGER:
-            await bot.send_message(
-                LOGGER_GROUP,
-                "Dogbin query " + message + " was executed successfully",
-            )
+        if response['isUrl']:
+            reply_text = "Shortened URL: [here]" + final_url + "\n\nDogbin URL(for stats): [here]" + dogbin_url + "v/" + key 
+        else:
+            reply_text = final_url
         
