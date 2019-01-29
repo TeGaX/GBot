@@ -11,6 +11,8 @@ from userbot import LOGGER, LOGGER_GROUP
 import requests
 
 
+dogbin_url = "https://del.dog/"
+
 @bot.on(events.NewMessage(outgoing=True, pattern="^.pip (.+)"))
 @bot.on(events.MessageEdited(outgoing=True, pattern="^.pip (.+)"))
 async def pipcheck(e):
@@ -31,7 +33,8 @@ async def pipcheck(e):
 @bot.on(events.MessageEdited(outgoing=True, pattern="^.paste?(\\s)"))
 async def paste(e):
     if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-        dogbin_url = "https://del.dog/"
+        dogbin_final_url = ""
+        dogbin_fail = False
 
         textx = await e.get_reply_message()
         message = e.text
@@ -41,20 +44,25 @@ async def paste(e):
         elif textx:
             message = str(textx.message)
         
-        # Dogbin
+        #Dogbin
         r = requests.post(dogbin_url + "documents", data=message.encode('utf-8'))
-        response = r.json()
-        key = response['key']
-        dogbin_final_url = dogbin_url + key
+
+        #Hastebin 
         hastebin_final_url = hastebin.post(message)
 
-        if response['isUrl']:
-            #dogbin_text = "Shortened URL: [here]" + final_url + "\n\nDogbin URL(for stats): [here]" + dogbin_url + "v/" + key 
-            reply_text = f'`Pasted successfully!`\n\n`Shortened URL:` {dogbin_final_url}\n\n`Original(non-shortened) URLs`\n`Dogbin URL`: {dogbin_url}v/{key}\n`Hastebin URL`: {hastebin_final_url}'
+        if r.status_code != 404:
+            response = r.json()
+            key = response['key']
+            dogbin_final_url = dogbin_url + key            
+
+            if response['isUrl']:
+                #dogbin_text = "Shortened URL: [here]" + final_url + "\n\nDogbin URL(for stats): [here]" + dogbin_url + "v/" + key 
+                reply_text = f'`Pasted successfully!`\n\n`Shortened URL:` {dogbin_final_url}\n\n`Original(non-shortened) URLs`\n`Dogbin URL`: {dogbin_url}v/{key}\n`Hastebin URL`: {hastebin_final_url}'
+            else:
+                reply_text = f'`Pasted successfully!`\n\n`Dogbin URL`: {dogbin_url}{key}\n`Hastebin URL`: {hastebin_final_url}'
         else:
-            reply_text = f'`Pasted successfully!`\n\n`Dogbin URL`: {dogbin_url}{key}\n`Hastebin URL`: {hastebin_final_url}'
+            reply_text = f'`Pasted successfully!`\n\n`Dogbin URL`: Failed to reach fogbin\n`Hastebin URL`: {hastebin_final_url}'
         
-        text = str(message[7:])
         await e.edit(reply_text)
         if LOGGER:
             await bot.send_message(
@@ -62,9 +70,48 @@ async def paste(e):
                 "Paste query `" + message + "` was executed successfully",
             )
 
-@bot.on(events.NewMessage(outgoing=True, pattern="^.get_paste_content"))
-@bot.on(events.MessageEdited(outgoing=True, pattern="^.get_paste_content"))
+@bot.on(events.NewMessage(outgoing=True, pattern="^.get_dogbin_content"))
+@bot.on(events.MessageEdited(outgoing=True, pattern="^.get_dogbin_content"))
+async def get_dogbin_content(e):
+    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
+        textx = await e.get_reply_message()
+        message = e.text
+        await e.edit("`Getting dogbin content . . .`")
+        if message[7:]:
+            message = str(message[20:])
+        elif textx:
+            message = str(textx.message)
 
+        format_normal = f'{dogbin_url}'
+        format_view = f'{dogbin_url}v/'
+
+        if message.startswith(format_view):
+            message = message[len(format_view):]
+        elif message.startswith(format_normal):
+            message = message[len(format_normal):]
+
+        r = requests.get(f'{dogbin_url}raw/{message}')
+
+        if r.status_code != 200:
+            try:
+                res = r.json()
+                await e.reply(res['message'])
+            except Exception:
+                if r.status_code == 404:
+                    await e.edit('`Failed to reach dogbin`')
+                else:
+                    await e.edit('`Unknown error occured`')
+            r.raise_for_status()
+
+        reply_text = "`Fetched dogbin URL content successfully!`\n\n`Content:` " + r.text
+
+        await e.reply(reply_text)
+        if LOGGER:
+            await bot.send_message(
+                LOGGER_GROUP,
+                "Get dogbin content query for `" + message + "` was executed successfully",
+            )
+        
 
 
 @bot.on(events.NewMessage(outgoing=True, pattern="^.log"))
