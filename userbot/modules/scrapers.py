@@ -187,28 +187,4 @@ async def let_me_google_that_for_you(e):
             await bot.send_message(
                 LOGGER_GROUP,
                 "LMGTFY query " + message + " was executed successfully",
-            )
-
-@bot.on(events.NewMessage(pattern="^.dogbin", outgoing=True))
-@bot.on(events.MessageEdited(pattern="^.dogbin", outgoing=True))
-async def dogbin(e):
-    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-        dogbin_url = "https://del.dog/"
-
-        textx = await e.get_reply_message()
-        message = e.text
-        if message[8:]:
-            message = str(message[8:])
-        elif textx:
-            message = str(textx.message)
-
-        r = requests.post(dogbin_url + "documents", data=message.encode('utf-8'))
-        response = r.json()
-        key = response['key']
-        final_url = dogbin_url + key
-
-        if response['isUrl']:
-            reply_text = "Shortened URL: [here]" + final_url + "\n\nDogbin URL(for stats): [here]" + dogbin_url + "v/" + key 
-        else:
-            reply_text = final_url
-        
+            )        

@@ -27,8 +27,6 @@ async def pipcheck(e):
         )
         await e.edit(r)
 
-
-######Will put del.dog later lmao sorry Tillie
 @bot.on(events.NewMessage(outgoing=True, pattern="^.paste?(\\s)"))
 @bot.on(events.MessageEdited(outgoing=True, pattern="^.paste?(\\s)"))
 async def paste(e):
@@ -56,7 +54,6 @@ async def paste(e):
             dogbin_final_url = dogbin_url + key            
 
             if response['isUrl']:
-                #dogbin_text = "Shortened URL: [here]" + final_url + "\n\nDogbin URL(for stats): [here]" + dogbin_url + "v/" + key 
                 reply_text = f'`Pasted successfully!`\n\n`Shortened URL:` {dogbin_final_url}\n\n`Original(non-shortened) URLs`\n`Dogbin URL`: {dogbin_url}v/{key}\n`Hastebin URL`: {hastebin_final_url}'
             else:
                 reply_text = f'`Pasted successfully!`\n\n`Dogbin URL`: {dogbin_url}{key}\n`Hastebin URL`: {hastebin_final_url}'
