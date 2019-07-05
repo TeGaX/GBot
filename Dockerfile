@@ -51,12 +51,6 @@ RUN git clone -b master https://github.com/zakaryan2004/GBot /home/userbot/userb
 WORKDIR /home/userbot/userbot
 
 #
-#Copies session and config(if they exists)
-#
-
-COPY ./userbot.session* ./config.env* /home/userbot/userbot/
-
-#
 # Install requirements
 #
 
