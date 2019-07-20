@@ -56,6 +56,4 @@ WORKDIR /home/userbot/userbot
 
 RUN sudo pip3 install -r requirements.txt
 RUN sudo chmod -R 777 /home/userbot/userbot
-RUN rm -f /var/lib/mongodb/mongod.log
-
 CMD ["dash","init/start.sh"]
