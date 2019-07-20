@@ -52,7 +52,7 @@ RUN adduser userbot --disabled-password --home /home/userbot
 RUN adduser userbot wheel
 USER userbot
 RUN mkdir /home/userbot/userbot
-RUN git clone -b master https://github.com/zakaryan2004/GBot /home/userbot/userbot
+RUN git clone -b staging https://github.com/zakaryan2004/GBot /home/userbot/userbot
 RUN mkdir /home/userbot/bin
 WORKDIR /home/userbot/userbot
 ADD ./requirements.txt /home/userbot/userbot/requirements.txt
