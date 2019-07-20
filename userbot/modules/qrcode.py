@@ -11,6 +11,7 @@
 import os
 from asyncio import sleep
 from datetime import datetime
+
 from requests import post, get
 
 from userbot import CMD_HELP
@@ -53,7 +54,8 @@ async def parseqr(qr_e):
 @register(pattern=r".makeqr(?: |$)([\s\S]*)", outgoing=True)
 async def make_qr(qrcode):
     """ For .makeqr command, make a QR Code containing the given content. """
-    if not qrcode.text[0].isalpha() and qrcode.text[0] not in ("/", "#", "@", "!"):
+    if not qrcode.text[0].isalpha() and qrcode.text[0] not in (
+            "/", "#", "@", "!"):
         if qrcode.fwd_from:
             return
         start = datetime.now()
@@ -98,6 +100,7 @@ async def make_qr(qrcode):
         await qrcode.edit("Created QRCode in {} seconds".format(duration))
         await sleep(5)
         await qrcode.delete()
+
 
 CMD_HELP.update({
     'getqr': ".getqr\

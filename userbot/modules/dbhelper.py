@@ -37,15 +37,15 @@ async def unmute(chatid, userid):
 
 
 async def get_muted(chatid):
-        muted_db = MONGO.mutes.find({
-            'chat_id': int(chatid)
-        })
+    muted_db = MONGO.mutes.find({
+        'chat_id': int(chatid)
+    })
 
-        muted = []
-        for user in muted_db:
-            muted.append(user["user_id"])
+    muted = []
+    for user in muted_db:
+        muted.append(user["user_id"])
 
-        return muted
+    return muted
 
 
 # GMutes
@@ -202,6 +202,10 @@ async def get_lists(chatid):
         ]
     })
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ada06387626d2bf1439d90e692b07c3cbeaff17a
 async def get_list(chatid, name):
     return MONGO.lists.find_one({
         '$or': [
@@ -211,6 +215,10 @@ async def get_list(chatid, name):
         'name': name
     })
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ada06387626d2bf1439d90e692b07c3cbeaff17a
 async def add_list(chatid, name, items):
     to_check = await get_list(chatid, name)
 
@@ -247,6 +255,10 @@ async def delete_list(chatid, name):
             'items': to_check["items"],
         })
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> ada06387626d2bf1439d90e692b07c3cbeaff17a
 async def set_list(oldchatid, name, newchatid):
     to_check = await get_list(oldchatid, name)
 

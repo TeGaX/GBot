@@ -5,7 +5,10 @@
 #
 """ Userbot module containing commands for interacting with dogbin(https://del.dog)"""
 
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> ada06387626d2bf1439d90e692b07c3cbeaff17a
 from requests import get, post, exceptions
 
 from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP
@@ -65,7 +68,8 @@ async def paste(pstl):
 @register(outgoing=True, pattern="^.get_dogbin_content(?: |$)(.*)")
 async def get_dogbin_content(dog_url):
     """ For .get_dogbin_content command, fetches the content of a dogbin URL. """
-    if not dog_url.text[0].isalpha() and dog_url.text[0] not in ("/", "#", "@", "!"):
+    if not dog_url.text[0].isalpha() and dog_url.text[0] not in (
+            "/", "#", "@", "!"):
         textx = await dog_url.get_reply_message()
         message = dog_url.pattern_match.group(1)
         await dog_url.edit("`Getting dogbin content . . .`")
@@ -108,6 +112,7 @@ async def get_dogbin_content(dog_url):
                 BOTLOG_CHATID,
                 "Get dogbin content query for `" + message + "` was executed successfully",
             )
+
 
 CMD_HELP.update({
     "paste": "Create a paste or a shortened url using dogbin (https://del.dog/)"

@@ -54,7 +54,8 @@ async def removelists(event):
                              .format(listname))
 
         if BOTLOG:
-            listat = "global storage" if _list['chat_id'] == 0 else str(event.chat_id)
+            listat = "global storage" if _list['chat_id'] == 0 else str(
+                event.chat_id)
             await event.client.send_message(
                 BOTLOG_CHATID,
                 f"Removed list {listname} from {listat}"
@@ -105,7 +106,8 @@ async def add_list_items(event):
 
         content.extend(event.text.partition(f"{listname} ")[2].splitlines())
 
-        msg = "`Items added successfully to the list. Use` ${} `to get the list.`"
+        msg = "`Items added successfully to the list. \
+Use` ${} `to get the list.`"
 
         if await add_list(event.chat_id, listname, content) is False:
             await event.edit(msg.format(listname))
@@ -113,7 +115,8 @@ async def add_list_items(event):
             await event.edit(f"List {listname} doesn't exist!")
 
         if BOTLOG:
-            listat = "global storage" if _list['chat_id'] else str(event.chat_id)
+            listat = "global storage" if _list['chat_id'] else str(
+                event.chat_id)
             await event.client.send_message(
                 BOTLOG_CHATID,
                 f"Added items {content} to {listname} in {listat}"
@@ -134,9 +137,10 @@ async def rmlistitems(event):
         _list = await get_list(event.chat_id, listname)
 
         content = _list['items']
-        del content[item_number-1]
+        del content[item_number - 1]
 
-        msg = "`Item {} removed from the list successfully. Use` ${} `to get the list.`"
+        msg = "`Item {} removed from the list successfully. \
+Use` ${} `to get the list.`"
 
         if await add_list(event.chat_id, listname, content) is False:
             await event.edit(msg.format(item_number, listname))
@@ -144,7 +148,8 @@ async def rmlistitems(event):
             await event.edit(f"List {listname} doesn't exist!")
 
         if BOTLOG:
-            listat = "global storage" if _list['chat_id'] else str(event.chat_id)
+            listat = "global storage" if _list['chat_id'] else str(
+                event.chat_id)
             await event.client.send_message(
                 BOTLOG_CHATID,
                 f"Removed item {str(item_number)} from {listname} in {listat}"
@@ -172,7 +177,8 @@ async def setliststate(event):
 
         chatid = 0 if changeToGlobal else event.chat_id
 
-        msg = f"`The state of list {listname} changed to {_futureState} successfully.`"
+        msg = f"`The state of list {listname} changed to \
+{_futureState} successfully.`"
 
         if await set_list(_list['chat_id'], listname, chatid) is True:
             await event.edit(msg)
@@ -202,10 +208,10 @@ async def lists_logic(event):
                     for i, item in enumerate(_list['items']):
                         return_str += f"{i+1}. {item}\n"
                 else:
-                    return_str = "`This list is empty!`"              
+                    return_str = "`This list is empty!`"
 
                 await event.reply(return_str)
-    except:
+    except BaseException:
         pass
 
 CMD_HELP.update({

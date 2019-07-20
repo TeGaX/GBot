@@ -6,24 +6,20 @@
 """ Userbot initialization. """
 
 import os
-
-from sys import version_info
-from logging import basicConfig, getLogger, INFO, DEBUG
 from distutils.util import strtobool as sb
+from logging import basicConfig, getLogger, INFO, DEBUG
+from sys import version_info
 
+import redis
 from dotenv import load_dotenv
+from pymongo import MongoClient
 from requests import get
 from telethon import TelegramClient
-from telethon.sessions import StringSession
-from pymongo import MongoClient
-import redis
-
 
 load_dotenv("config.env")
 
 # Bot Logs setup:
 CONSOLE_LOGGER_VERBOSE = sb(os.environ.get("CONSOLE_LOGGER_VERBOSE", "False"))
-
 
 if CONSOLE_LOGGER_VERBOSE:
     basicConfig(
@@ -113,9 +109,10 @@ MONGO = MONGOCLIENT.userbot
 def is_mongo_alive():
     try:
         MONGOCLIENT.server_info()
-    except:
+    except BaseException:
         return False
     return True
+
 
 # Init Redis
 # Redis will be hosted inside the docker container that hosts the bot
@@ -127,7 +124,7 @@ def is_redis_alive():
     try:
         REDIS.ping()
         return True
-    except:
+    except BaseException:
         return False
 
 
@@ -135,10 +132,118 @@ def is_redis_alive():
 COUNT_MSG = 0
 BRAIN_CHECKER = []
 USERS = {}
-WIDE_MAP = dict((i, i + 0xFEE0) for i in range(0x21, 0x7F))
-WIDE_MAP[0x20] = 0x3000
 COUNT_PM = {}
 LASTMSG = {}
 ENABLE_KILLME = True
 CMD_HELP = {}
 AFKREASON = "no reason"
+ZALG_LIST = [["̖",
+              " ̗",
+              " ̘",
+              " ̙",
+              " ̜",
+              " ̝",
+              " ̞",
+              " ̟",
+              " ̠",
+              " ̤",
+              " ̥",
+              " ̦",
+              " ̩",
+              " ̪",
+              " ̫",
+              " ̬",
+              " ̭",
+              " ̮",
+              " ̯",
+              " ̰",
+              " ̱",
+              " ̲",
+              " ̳",
+              " ̹",
+              " ̺",
+              " ̻",
+              " ̼",
+              " ͅ",
+              " ͇",
+              " ͈",
+              " ͉",
+              " ͍",
+              " ͎",
+              " ͓",
+              " ͔",
+              " ͕",
+              " ͖",
+              " ͙",
+              " ͚",
+              " ",
+              ],
+             [" ̍",
+              " ̎",
+              " ̄",
+              " ̅",
+              " ̿",
+              " ̑",
+              " ̆",
+              " ̐",
+              " ͒",
+              " ͗",
+              " ͑",
+              " ̇",
+              " ̈",
+              " ̊",
+              " ͂",
+              " ̓",
+              " ̈́",
+              " ͊",
+              " ͋",
+              " ͌",
+              " ̃",
+              " ̂",
+              " ̌",
+              " ͐",
+              " ́",
+              " ̋",
+              " ̏",
+              " ̽",
+              " ̉",
+              " ͣ",
+              " ͤ",
+              " ͥ",
+              " ͦ",
+              " ͧ",
+              " ͨ",
+              " ͩ",
+              " ͪ",
+              " ͫ",
+              " ͬ",
+              " ͭ",
+              " ͮ",
+              " ͯ",
+              " ̾",
+              " ͛",
+              " ͆",
+              " ̚",
+              ],
+             [" ̕",
+              " ̛",
+              " ̀",
+              " ́",
+              " ͘",
+              " ̡",
+              " ̢",
+              " ̧",
+              " ̨",
+              " ̴",
+              " ̵",
+              " ̶",
+              " ͜",
+              " ͝",
+              " ͞",
+              " ͟",
+              " ͠",
+              " ͢",
+              " ̸",
+              " ̷",
+              " ͡",
+              ]]

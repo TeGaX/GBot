@@ -6,15 +6,21 @@
 
 """ Userbot module for muting chats. """
 
-from userbot import (BOTLOG, BOTLOG_CHATID, CMD_HELP, MONGO, REDIS,
-                     is_mongo_alive, is_redis_alive)
+from userbot import (
+    BOTLOG,
+    BOTLOG_CHATID,
+    CMD_HELP,
+    MONGO,
+    is_mongo_alive,
+    is_redis_alive)
 from userbot.events import register
 
 
 @register(outgoing=True, pattern="^.unmutechat$")
 async def unmute_chat(unm_e):
     """ For .unmutechat command, unmute a muted chat. """
-    if not unm_e.text[0].isalpha() and unm_e.text[0] not in ("/", "#", "@", "!"):
+    if not unm_e.text[0].isalpha() and unm_e.text[0] not in (
+            "/", "#", "@", "!"):
         if not is_mongo_alive() or not is_redis_alive():
             await unm_e.edit("`Database connections failing!`")
             return
@@ -27,7 +33,8 @@ async def unmute_chat(unm_e):
 @register(outgoing=True, pattern="^.mutechat$")
 async def mute_chat(mute_e):
     """ For .mutechat command, mute any chat. """
-    if not mute_e.text[0].isalpha() and mute_e.text[0] not in ("/", "#", "@", "!"):
+    if not mute_e.text[0].isalpha() and mute_e.text[0] not in (
+            "/", "#", "@", "!"):
         if not is_mongo_alive() or not is_redis_alive():
             await mute_e.edit("`Database connections failing!`")
             return
@@ -51,8 +58,9 @@ async def keep_read(message):
         {"chat_id": message.chat_id})
     if kread:
         for i in kread:
-            if i.groupid == str(message.chat_id):
+            if i["chat_id"] == message.chat_id:
                 await message.client.send_read_acknowledge(message.chat_id)
+
 
 CMD_HELP.update({
     'unmutechat': '.unmutechat\

@@ -23,7 +23,6 @@ from telethon.tl.types import (ChannelParticipantsAdmins, ChatAdminRights,
 from userbot import (BRAIN_CHECKER,
                      CMD_HELP, BOTLOG, BOTLOG_CHATID, bot,
                      is_mongo_alive, is_redis_alive)
-
 from userbot.events import register
 from userbot.modules.dbhelper import (mute, unmute, get_muted,
                                       gmute, ungmute, get_gmuted)
@@ -75,9 +74,11 @@ MUTE_RIGHTS = ChatBannedRights(
 )
 
 UNMUTE_RIGHTS = ChatBannedRights(
-        until_date=None,
-        send_messages=False
+    until_date=None,
+    send_messages=False
 )
+
+
 # ================================================
 
 
@@ -375,7 +376,9 @@ async def spider(spdr):
         self_user = await spdr.client.get_me()
 
         if user.id == self_user.id:
-            await spdr.edit("`Mute Error! You are not supposed to mute yourself!`")
+            await spdr.edit(
+                "`Mute Error! You are not supposed to mute yourself!`"
+            )
             return
 
         # If the targeted user is a Sudo
@@ -842,6 +845,7 @@ async def get_user_from_id(user, event):
         return None
 
     return user_obj
+
 
 CMD_HELP.update({
     "promote": "Usage: Reply to message with .promote to promote them."

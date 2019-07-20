@@ -6,12 +6,13 @@
 
 """ Userbot module containing commands for keeping notes. """
 
+from asyncio import sleep
+
 from userbot import (BOTLOG, BOTLOG_CHATID, CMD_HELP,
                      is_mongo_alive, is_redis_alive)
+from userbot.events import register
 from userbot.modules.dbhelper import (get_note, get_notes,
                                       add_note, delete_note)
-from userbot.events import register
-from asyncio import sleep
 
 
 @register(outgoing=True, pattern="^.saved$")
@@ -74,7 +75,7 @@ async def add_filter(event):
             return await event.edit(msg.format('added', notename))
 
 
-@register(outgoing=True, pattern="^.note (\w*)")
+@register(outgoing=True, pattern=r"^.note (\w*)")
 async def save_note(event):
     """ For .save command, saves notes in a chat. """
     cmd = event.text[0]
@@ -103,8 +104,8 @@ async def note(event):
             notename = event.text[1:]
             note = await get_note(event.chat_id, notename)
             if note:
-                    await event.reply(note["text"])
-    except:
+                await event.reply(note["text"])
+    except BaseException:
         pass
 
 
@@ -134,8 +135,9 @@ async def kick_marie_notes(kick):
         if BOTLOG:
             await kick.client.send_message(
                 BOTLOG_CHATID, "I cleaned all Notes at " +
-                str(kick.chat_id)
+                               str(kick.chat_id)
             )
+
 
 CMD_HELP.update({
     "notes": "\
