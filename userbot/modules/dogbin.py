@@ -5,10 +5,6 @@
 #
 """ Userbot module containing commands for interacting with dogbin(https://del.dog)"""
 
-<<<<<<< HEAD
-import json
-=======
->>>>>>> ada06387626d2bf1439d90e692b07c3cbeaff17a
 from requests import get, post, exceptions
 
 from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP
