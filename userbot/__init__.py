@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from requests import get
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 load_dotenv("config.env")
 
