@@ -10,6 +10,7 @@ from distutils.util import strtobool as sb
 from logging import basicConfig, getLogger, INFO, DEBUG
 from sys import version_info
 
+import pylast
 import redis
 from dotenv import load_dotenv
 from pymongo import MongoClient
@@ -47,7 +48,8 @@ CONFIG_CHECK = os.environ.get(
 
 if CONFIG_CHECK:
     LOGS.error(
-        "Please remove the line mentioned in the first hashtag from the config.env file")
+        "Please remove the line mentioned in the first \
+         hashtag from the config.env file")
     quit(1)
 
 API_KEY = os.environ.get("API_KEY", None)
@@ -86,12 +88,27 @@ YOUTUBE_API_KEY = os.environ.get(
 
 SPOTIFY_USERNAME = os.environ.get("SPOTIFY_USERNAME", None)
 SPOTIFY_PASS = os.environ.get("SPOTIFY_PASS", None)
-SPOTIFY_BIO_PREFIX = os.environ.get("SPOTIFY_BIO_PREFIX", None)
+BIO_PREFIX = os.environ.get("BIO_PREFIX", None)
 DEFAULT_BIO = os.environ.get("DEFAULT_BIO", None)
 
-GDRIVE_FOLDER = os.environ.get(
-    "GDRIVE_FOLDER", None
-)
+LASTFM_API = os.environ.get("LASTFM_API", None)
+LASTFM_SECRET = os.environ.get("LASTFM_SECRET", None)
+LASTFM_USERNAME = os.environ.get("LASTFM_USERNAME", None)
+LASTFM_PASSWORD_PLAIN = os.environ.get("LASTFM_PASSWORD", None)
+LASTFM_PASS = pylast.md5(LASTFM_PASSWORD_PLAIN)
+if not LASTFM_USERNAME == "None":
+    lastfm = pylast.LastFMNetwork(
+        api_key=LASTFM_API,
+        api_secret=LASTFM_SECRET,
+        username=LASTFM_USERNAME,
+        password_hash=LASTFM_PASS
+    )
+else:
+    lastfm = None
+
+CURRENCY_API = os.environ.get("CURRENCY_API", None)
+
+GDRIVE_FOLDER = os.environ.get("GDRIVE_FOLDER", None)
 
 # pylint: disable=invalid-name
 bot = TelegramClient(StringSession(STRING_SESSION), API_KEY, API_HASH)
@@ -101,7 +118,8 @@ if os.path.exists("learning-data-root.check"):
 else:
     LOGS.info("Braincheck file does not exist, fetching...")
 
-URL = 'https://raw.githubusercontent.com/RaphielGang/databasescape/master/learning-data-root.check'
+URL = 'https://raw.githubusercontent.com/RaphielGang/'
+URL += 'databasescape/master/learning-data-root.check'
 
 with open('learning-data-root.check', 'wb') as load:
     load.write(get(URL).content)

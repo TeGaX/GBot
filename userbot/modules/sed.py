@@ -12,13 +12,15 @@ import re
 from sre_constants import error as sre_err
 
 from userbot import CMD_HELP
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 DELIMITERS = ("/", ":", "|", "_")
 
 
 def separate_sed(sed_string):
     """ Separate sed arguments. """
+    if len(sed_string) < 3:
+        return
     if (
             len(sed_string) >= 3 and
             sed_string[3] in DELIMITERS and
@@ -66,6 +68,7 @@ def separate_sed(sed_string):
 
 
 @register(outgoing=True, pattern="^sed")
+@errors_handler
 async def sed(command):
     """ For sed command, use sed on Telegram. """
     sed_result = separate_sed(command.text)

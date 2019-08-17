@@ -13,7 +13,7 @@ from html import unescape
 from re import findall
 from urllib import parse
 from urllib.error import HTTPError
-
+from googlesearch import search
 from emoji import get_emoji_regexp
 from google_images_download import google_images_download
 from googleapiclient.discovery import build
@@ -27,13 +27,14 @@ from urbandict import define
 from wikipedia import summary
 from wikipedia.exceptions import DisambiguationError, PageError
 
-from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID, YOUTUBE_API_KEY, bot
-from userbot.events import register
+from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID, YOUTUBE_API_KEY, CURRENCY_API, bot
+from userbot.events import register, errors_handler
 
 LANG = "en"
 
 
 @register(outgoing=True, pattern="^.img (.*)")
+@errors_handler
 async def img_sampler(event):
     """ For .img command, search and return images matching the query. """
     if not event.text[0].isalpha() and event.text[0] not in (
@@ -60,7 +61,8 @@ async def img_sampler(event):
         # passing the arguments to the function
         paths = response.download(arguments)
         lst = paths[0][query]
-        await event.client.send_file(await event.client.get_input_entity(event.chat_id), lst)
+        await event.client.send_file(await event.client.get_input_entity(
+            event.chat_id), lst)
         os.remove(lst[0])
         os.remove(lst[1])
         os.rmdir(os.path.dirname(os.path.abspath(lst[0])))
@@ -68,20 +70,17 @@ async def img_sampler(event):
 
 
 @register(outgoing=True, pattern=r"^.google (.*)")
+@errors_handler
 async def gsearch(q_event):
     """ For .google command, do a Google search. """
     if not q_event.text[0].isalpha() and q_event.text[0] not in (
             "/", "#", "@", "!"):
         match_ = q_event.pattern_match.group(1)
         match = parse.quote_plus(match_)
-        result_ = await asyncsh(
-            f"gsearch {match}",
-            stdout=asyncsh_PIPE,
-            stderr=asyncsh_PIPE
-        )
-        stdout, stderr = await result_.communicate()
-        result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
+        result = ""
+        for i in search(match, stop=8):
+            result += i
+            result += "\n"
         await q_event.edit(
             "**Search Query:**\n`" + match_ + "`\n\n**Result:**\n" + result
         )
@@ -93,6 +92,7 @@ async def gsearch(q_event):
 
 
 @register(outgoing=True, pattern=r"^.wiki (.*)")
+@errors_handler
 async def wiki(wiki_q):
     """ For .google command, fetch content from Wikipedia. """
     if not wiki_q.text[0].isalpha() and wiki_q.text[0] not in (
@@ -131,6 +131,7 @@ async def wiki(wiki_q):
 
 
 @register(outgoing=True, pattern="^.ud (.*)")
+@errors_handler
 async def urban_dict(ud_e):
     """ For .ud command, fetch content from Urban Dictionary. """
     if not ud_e.text[0].isalpha() and ud_e.text[0] not in ("/", "#", "@", "!"):
@@ -187,6 +188,7 @@ async def urban_dict(ud_e):
 
 
 @register(outgoing=True, pattern=r"^.tts(?: |$)([\s\S]*)")
+@errors_handler
 async def text_to_speech(query):
     """ For .tts command, a wrapper for Google Text-to-Speech. """
     if not query.text[0].isalpha() and query.text[0] not in (
@@ -198,7 +200,8 @@ async def text_to_speech(query):
         elif textx:
             message = textx.text
         else:
-            await query.edit("`Give a text or reply to a message for Text-to-Speech!`")
+            await query.edit("`Give a text or reply to a "
+                             "message for Text-to-Speech!`")
             return
 
         try:
@@ -206,7 +209,8 @@ async def text_to_speech(query):
         except AssertionError:
             await query.edit(
                 'The text is empty.\n'
-                'Nothing left to speak after pre-precessing, tokenizing and cleaning.'
+                'Nothing left to speak after pre-precessing, '
+                'tokenizing and cleaning.'
             )
             return
         except ValueError:
@@ -224,16 +228,19 @@ async def text_to_speech(query):
             tts = gTTS(message, LANG)
             tts.save("k.mp3")
         with open("k.mp3", "r"):
-            await query.client.send_file(query.chat_id, "k.mp3", voice_note=True)
+            await query.client.send_file(query.chat_id,
+                                         "k.mp3", voice_note=True)
             os.remove("k.mp3")
             if BOTLOG:
                 await query.client.send_message(
-                    BOTLOG_CHATID, "tts of " + message + " executed successfully!"
+                    BOTLOG_CHATID, "tts of " + message
+                                             + " executed successfully!"
                 )
             await query.delete()
 
 
 @register(outgoing=True, pattern=r"^.trt(?: |$)([\s\S]*)")
+@errors_handler
 async def translateme(trans):
     """ For .trt command, translate the given text using Google Translate. """
     if not trans.text[0].isalpha() and trans.text[0] not in (
@@ -246,7 +253,8 @@ async def translateme(trans):
         elif textx:
             message = textx.text
         else:
-            await trans.edit("`Give a text or reply to a message to translate!`")
+            await trans.edit("`Give a text or reply "
+                             "to a message to translate!`")
             return
 
         try:
@@ -270,6 +278,7 @@ async def translateme(trans):
 
 
 @register(pattern=".lang (.*)", outgoing=True)
+@errors_handler
 async def lang(value):
     """ For .lang command, change the default langauge of userbot scrapers. """
     if not value.text[0].isalpha() and value.text[0] not in (
@@ -284,6 +293,7 @@ async def lang(value):
 
 
 @register(outgoing=True, pattern="^.yt (.*)")
+@errors_handler
 async def yt_search(video_q):
     """ For .yt command, do a YouTube search from Telegram. """
     if not video_q.text[0].isalpha() and video_q.text[0] not in (
@@ -306,7 +316,7 @@ async def yt_search(video_q):
 
         for video in videos_json:
             result += f"{i}. {unescape(video['snippet']['title'])} \
-                \nhttps://www.youtube.com/watch?v={video['id']['videoId']}\n"
+\nhttps://www.youtube.com/watch?v={video['id']['videoId']}\n"
             i += 1
 
         reply_text = f"**Search Query:**\n`{query}`\n\n**Result:**\n{result}"
@@ -352,6 +362,7 @@ def youtube_search(
 
 
 @register(outgoing=True, pattern=r".yt_dl (\S*) ?(\S*)")
+@errors_handler
 async def download_video(v_url):
     """ For .yt_dl command, download videos from YouTube. """
     if not v_url.text[0].isalpha() and v_url.text[0] not in (
@@ -387,7 +398,8 @@ async def download_video(v_url):
             available_qualities += all_streams[-1].resolution
 
             await v_url.edit(
-                "**A stream matching your query wasn't found. Try again with different options.\n**"
+                "**A stream matching your query wasn't found. "
+                "Try again with different options.\n**"
                 "**Available Qualities:**\n"
                 f"{available_qualities}"
             )
@@ -399,8 +411,10 @@ async def download_video(v_url):
             await v_url.edit(
                 ("**File larger than 50MB. Sending the link instead.\n**"
                  f"Get the video [here]({video_stream.url})\n\n"
-                 "**If the video plays instead of downloading, right click(or long press on touchscreen) and "
-                 "press 'Save Video As...'(may depend on the browser) to download the video.**")
+                 "**If the video plays instead of downloading, "
+                 "right click(or long press on touchscreen) and "
+                 "press 'Save Video As...'(may depend on the browser) "
+                 "to download the video.**")
             )
             return
 
@@ -424,6 +438,22 @@ async def download_video(v_url):
         os.remove(f"{safe_filename(video.title)}.mp4")
         os.remove('thumbnail.jpg')
         await v_url.delete()
+
+
+@register(outgoing=True, pattern=r".cr (\S*) ?(\S*) ?(\S*)")
+async def currency(cconvert):
+    """ For .cr command, convert amount, from, to. """
+    if not cconvert.text[0].isalpha() and cconvert.text[0] not in (
+            "/", "#", "@", "!"):
+        amount = cconvert.pattern_match.group(1)
+        currency_from = cconvert.pattern_match.group(3).upper()
+        currency_to = cconvert.pattern_match.group(2).upper()
+        data = get(
+            f"https://free.currconv.com/api/v7/convert?apiKey={CURRENCY_API}&q={currency_from}_{currency_to}&compact=ultra").json()
+        result = data[f'{currency_from}_{currency_to}']
+        result = float(amount) / float(result)
+        result = round(result, 5)
+        await cconvert.edit(f"{amount} {currency_to} is:\n`{result} {currency_from}`")
 
 
 def deEmojify(inputString):
@@ -457,8 +487,9 @@ CMD_HELP.update({
 })
 CMD_HELP.update({
     'lang': ".lang <lang>\
-    \nUsage: Changes the default language of userbot scrapers used for Google TRT, \
-    TTS may not work."
+    \nUsage: Changes the default language of"
+    "userbot scrapers used for Google TRT, "
+    "TTS may not work."
 })
 CMD_HELP.update({
     'yt': ".yt <search_query>\
@@ -469,4 +500,8 @@ CMD_HELP.update({
     \nUsage: Download videos from YouTube. \
 If no quality is specified, the highest downloadable quality is downloaded. \
 Will send the link if the video is larger than 50 MB."
+})
+CMD_HELP.update({
+    'cr': ".cr <from> <to>\
+    \nUsage: Currency converter, converts <from> to <to>."
 })

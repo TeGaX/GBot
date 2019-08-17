@@ -11,9 +11,11 @@ from userbot import (BOTLOG, BOTLOG_CHATID, CMD_HELP,
 from userbot.modules.dbhelper import (get_list, get_lists,
                                       add_list, delete_list,
                                       set_list)
-from userbot.events import register
+from userbot.events import register, errors_handler
+
 
 @register(outgoing=True, pattern="^.lists$")
+@errors_handler
 async def lists_active(event):
     """ For .lists command, list all of the lists saved in a chat. """
     cmd = event.text[0]
@@ -35,7 +37,9 @@ async def lists_active(event):
 
         await event.edit(message)
 
+
 @register(outgoing=True, pattern=r"^.rmlist (\w*)")
+@errors_handler
 async def removelists(event):
     """ For .rmlist command, delete list with the given name."""
     cmd = event.text[0]
@@ -61,7 +65,9 @@ async def removelists(event):
                 f"Removed list {listname} from {listat}"
             )
 
+
 @register(outgoing=True, pattern=r"^.add(g)?list (\w*)")
+@errors_handler
 async def addlist(event):
     """ For .add(g)list command, saves lists in a chat. """
     cmd = event.text[0]
@@ -93,6 +99,7 @@ async def addlist(event):
 
 
 @register(outgoing=True, pattern=r"^.addlistitem(s)? (\w*)")
+@errors_handler
 async def add_list_items(event):
     """ For .addlistitems command, add item(s) to a list. """
     cmd = event.text[0]
@@ -123,7 +130,9 @@ Use` ${} `to get the list.`"
                 f"Added items {content} to {listname} in {listat}"
             )
 
+
 @register(outgoing=True, pattern=r"^.editlistitem (\w*) ([0-9]+)")
+@errors_handler
 async def edit_list_item(event):
     """ For .editlistitem command, edit an individual item on a list. """
     cmd = event.text[0]
@@ -159,6 +168,7 @@ Use` ${listname} `to get the list.`"
 
 
 @register(outgoing=True, pattern=r"^.rmlistitem (\w*) ([0-9]+)")
+@errors_handler
 async def rmlistitems(event):
     """ For .rmlistitem command, remove an item from the list. """
     cmd = event.text[0]
@@ -191,7 +201,9 @@ Use` ${} `to get the list.`"
                 f"Removed item {str(item_number)} from {listname} in {listat}"
             )
 
+
 @register(outgoing=True, pattern=r"^.setlist (\w*) (\w*)")
+@errors_handler
 async def setliststate(event):
     """ For .setlist command, changes the state of a list. """
     cmd = event.text[0]
@@ -227,7 +239,9 @@ async def setliststate(event):
                 f"Changed state of list {listname} to {_futureState}"
             )
 
+
 @register(pattern=r"\$\w*", disable_edited=True)
+@errors_handler
 async def lists_logic(event):
     """ Lists logic. """
     try:
