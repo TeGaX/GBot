@@ -1,13 +1,14 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
-# Licensed under the Raphielscape Public License, Version 1.b (the "License");
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 #
 """
 This module updates the userbot based on Upstream revision
 """
 
-from os import remove
+from os import remove, execl
+import sys
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
@@ -35,8 +36,7 @@ async def is_off_br(br):
 @errors_handler
 async def upstream(ups):
     "For .update command, check if the bot is up to date, update if specified"
-    if not ups.text[0].isalpha() and ups.text[0] not in (
-            "/", "#", "@", "!"):
+    if not ups.text[0].isalpha() and ups.text[0] not in ("/", "#", "@", "!"):
         await ups.edit("`Checking for updates, please wait....`")
         conf = ups.pattern_match.group(1)
         off_repo = 'https://github.com/RaphielGang/Telegram-UserBot.git'
@@ -62,8 +62,7 @@ async def upstream(ups):
                 f'**[UPDATER]:**` Looks like you are using your own custom branch ({ac_br}). '
                 'in that case, Updater is unable to identify '
                 'which branch is to be merged. '
-                'please checkout to any official branch`'
-            )
+                'please checkout to any official branch`')
             return
 
         try:
@@ -76,13 +75,15 @@ async def upstream(ups):
         changelog = await gen_chlog(repo, f'HEAD..upstream/{ac_br}')
 
         if not changelog:
-            await ups.edit(f'\n`Your BOT is`  **up-to-date**  `with`  **{ac_br}**\n')
+            await ups.edit(
+                f'\n`Your BOT is`  **up-to-date**  `with`  **{ac_br}**\n')
             return
 
         if conf != "now":
             changelog_str = f'**New UPDATE available for [{ac_br}]:\n\nCHANGELOG:**\n`{changelog}`'
             if len(changelog_str) > 4096:
-                await ups.edit("`Changelog is too big, view the file to see it.`")
+                await ups.edit(
+                    "`Changelog is too big, view the file to see it.`")
                 file = open("output.txt", "w+")
                 file.write(changelog_str)
                 file.close()
@@ -98,25 +99,20 @@ async def upstream(ups):
             return
 
         await ups.edit('`New update found, updating...`')
-
-        try:
-            ups_rem.pull(ac_br)
-            await ups.edit(
-                '`Successfully Updated without casualties\n'
-                'Bot is switching off now.. restart kthx`'
-            )
-            await ups.client.disconnect()
-        except GitCommandError:
-            ups_rem.git.reset('--hard')
-            await ups.edit(
-                '`Successfully Updated with casualties\n'
-                'Bot is switching off now.. restart kthx`'
-            )
-            await ups.client.disconnect()
+        ups_rem.fetch(ac_br)
+        ups_rem.git.reset('--hard', 'FETCH_HEAD')
+        await ups.edit('`Successfully Updated!\n'
+                       'Bot is restarting... Wait for a second!`')
+        await ups.client.disconnect()
+        # Spin a new instance of bot
+        execl(sys.executable, sys.executable, *sys.argv)
+        # Shut the existing one down
+        exit()
 
 
 CMD_HELP.update({
-    'update': '.update\
+    'update':
+    '.update\
 \nUsage: Check if the main userbot repository has any\
 updates and show changelog if so.\
 \n\n.update now\

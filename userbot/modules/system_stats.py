@@ -1,6 +1,6 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
-# Licensed under the Raphielscape Public License, Version 1.b (the "License");
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 #
 """ Userbot module for getting information about the server. """
@@ -47,8 +47,8 @@ async def sysdetails(sysd):
 @errors_handler
 async def bot_ver(event):
     """ For .botver command, get the bot version. """
-    if not event.text[0].isalpha() and event.text[0] not in (
-            "/", "#", "@", "!"):
+    if not event.text[0].isalpha() and event.text[0] not in ("/", "#", "@",
+                                                             "!"):
         if which("git") is not None:
             invokever = "git describe --all --long"
             ver = await asyncrunapp(
@@ -70,18 +70,16 @@ async def bot_ver(event):
             revout = str(stdout.decode().strip()) \
                 + str(stderr.decode().strip())
 
-            await event.edit(
-                "`Userbot Version: "
-                f"{verout}"
-                "` \n"
-                "`Revision: "
-                f"{revout}"
-                "`"
-            )
+            await event.edit("`Userbot Version: "
+                             f"{verout}"
+                             "` \n"
+                             "`Revision: "
+                             f"{revout}"
+                             "` \n"
+                             "`Tagged Version: r4.0`")
         else:
             await event.edit(
-                "Shame that you don't have git, You're running r3.1 anyway"
-            )
+                "Shame that you don't have git, You're running r4.0 anyway")
 
 
 @register(outgoing=True, pattern="^.pip(?: |$)(.*)")
@@ -116,19 +114,15 @@ async def pipcheck(pip):
                     )
                     remove("output.txt")
                     return
-                await pip.edit(
-                    "**Query: **\n`"
-                    f"{invokepip}"
-                    "`\n**Result: **\n`"
-                    f"{pipout}"
-                    "`"
-                )
+                await pip.edit("**Query: **\n`"
+                               f"{invokepip}"
+                               "`\n**Result: **\n`"
+                               f"{pipout}"
+                               "`")
             else:
-                await pip.edit(
-                    "**Query: **\n`"
-                    f"{invokepip}"
-                    "`\n**Result: **\n`No Result Returned/False`"
-                )
+                await pip.edit("**Query: **\n`"
+                               f"{invokepip}"
+                               "`\n**Result: **\n`No Result Returned/False`")
         else:
             await pip.edit("`Use .help pip to see an example`")
 
@@ -137,27 +131,29 @@ async def pipcheck(pip):
 @errors_handler
 async def amireallyalive(e):
     if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-        if not is_mongo_alive() or not is_redis_alive():
-            db = "Either Mongo or Redis Database seems to be failing!"
+        if not is_mongo_alive() and not is_redis_alive():
+            db = "Both Mongo and Redis Database seems to be failing!"
+        elif not is_mongo_alive():
+            db = "Mongo DB seems to be failing!"
+        elif not is_redis_alive():
+            db = "Redis Cache seems to be failing!"
         else:
             db = "Databases functioning normally!"
-        await e.edit(
-            "`"
-            "Your bot is running \n\n"
-            f"Telethon version: {version.__version__} \n"
-            f"Python: {python_version()} \n"
-            f"User: {DEFAULTUSER} \n"
-            f"Database Status: {db}"
-            "`"
-        )
+        await e.edit("`"
+                     "Your bot is running \n\n"
+                     f"Telethon version: {version.__version__} \n"
+                     f"Python: {python_version()} \n"
+                     f"User: {DEFAULTUSER} \n"
+                     f"Database Status: {db}"
+                     "`")
 
 
 @register(outgoing=True, pattern="^.aliveu")
 @errors_handler
 async def amireallyaliveuser(username):
     """ For .aliveu command, change the username in the .alive command. """
-    if not username.text[0].isalpha(
-    ) and username.text[0] not in ("/", "#", "@", "!"):
+    if not username.text[0].isalpha() and username.text[0] not in ("/", "#",
+                                                                   "@", "!"):
         message = username.text
         output = '.aliveu [new user without brackets] nor can it be empty'
         if not (message == '.aliveu' or message[7:8] != ' '):
@@ -165,42 +161,31 @@ async def amireallyaliveuser(username):
             global DEFAULTUSER
             DEFAULTUSER = newuser
             output = 'Successfully changed user to ' + newuser + '!'
-        await username.edit(
-            "`"
-            f"{output}"
-            "`"
-        )
+        await username.edit("`" f"{output}" "`")
 
 
 @register(outgoing=True, pattern="^.resetalive$")
 @errors_handler
 async def amireallyalivereset(ureset):
     """ For .resetalive command, reset the username in the .alive command. """
-    if not ureset.text[0].isalpha() and ureset.text[0] not in (
-            "/", "#", "@", "!"):
+    if not ureset.text[0].isalpha() and ureset.text[0] not in ("/", "#", "@",
+                                                               "!"):
         global DEFAULTUSER
         DEFAULTUSER = uname().node
-        await ureset.edit(
-            "`"
-            "Successfully reset user for alive!"
-            "`"
-        )
+        await ureset.edit("`" "Successfully reset user for alive!" "`")
 
 
+CMD_HELP.update(
+    {"sysd": ".sysd\
+    \nUsage: Show system information using neofetch."})
+CMD_HELP.update({"botver": ".botver\
+    \nUsage: Show the userbot version."})
+CMD_HELP.update(
+    {"pip": ".pip <module(s)>\
+    \nUsage: Search module(s) in PyPi."})
 CMD_HELP.update({
-    "sysd": ".sysd\
-    \nUsage: Show system information using neofetch."
-})
-CMD_HELP.update({
-    "botver": ".botver\
-    \nUsage: Show the userbot version."
-})
-CMD_HELP.update({
-    "pip": ".pip <module(s)>\
-    \nUsage: Search module(s) in PyPi."
-})
-CMD_HELP.update({
-    "alive": ".alive\
+    "alive":
+    ".alive\
     \nUsage: Check if your bot is working or not. \
 Use .aliveu <new_user> to change user name, or .resetalive \
 to reset it to default."
