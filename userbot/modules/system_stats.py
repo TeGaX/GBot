@@ -130,22 +130,21 @@ async def pipcheck(pip):
 @register(outgoing=True, pattern="^.alive$")
 @errors_handler
 async def amireallyalive(e):
-    if not e.text[0].isalpha() and e.text[0] not in ("/", "#", "@", "!"):
-        if not is_mongo_alive() and not is_redis_alive():
-            db = "Both Mongo and Redis Database seems to be failing!"
-        elif not is_mongo_alive():
-            db = "Mongo DB seems to be failing!"
-        elif not is_redis_alive():
-            db = "Redis Cache seems to be failing!"
-        else:
-            db = "Databases functioning normally!"
-        await e.edit("`"
-                     "Your bot is running \n\n"
-                     f"Telethon version: {version.__version__} \n"
-                     f"Python: {python_version()} \n"
-                     f"User: {DEFAULTUSER} \n"
-                     f"Database Status: {db}"
-                     "`")
+    if not is_mongo_alive() and not is_redis_alive():
+        db = "Both Mongo and Redis Database seems to be failing!"
+    elif not is_mongo_alive():
+        db = "Mongo DB seems to be failing!"
+    elif not is_redis_alive():
+        db = "Redis Cache seems to be failing!"
+    else:
+        db = "Databases functioning normally!"
+    await e.edit("`"
+                 "Your bot is running \n\n"
+                 f"Telethon version: {version.__version__} \n"
+                 f"Python: {python_version()} \n"
+                 f"User: {DEFAULTUSER} \n"
+                 f"Database Status: {db}"
+                 "`")
 
 
 @register(outgoing=True, pattern="^.aliveu")
@@ -176,17 +175,16 @@ async def amireallyalivereset(ureset):
 
 
 CMD_HELP.update(
-    {"sysd": ".sysd\
-    \nUsage: Show system information using neofetch."})
-CMD_HELP.update({"botver": ".botver\
-    \nUsage: Show the userbot version."})
+    {"sysd": ".sysd"
+     "\nUsage: Show system information using neofetch."})
+CMD_HELP.update({"botver": ".botver" "\nUsage: Show the userbot version."})
 CMD_HELP.update(
-    {"pip": ".pip <module(s)>\
-    \nUsage: Search module(s) in PyPi."})
+    {"pip": ".pip <module(s)>"
+     "\nUsage: Search module(s) in PyPi."})
 CMD_HELP.update({
     "alive":
-    ".alive\
-    \nUsage: Check if your bot is working or not. \
-Use .aliveu <new_user> to change user name, or .resetalive \
-to reset it to default."
+    ".alive"
+    "\nUsage: Check if your bot is working or not. "
+    "Use .aliveu <new_user> to change user name, or .resetalive "
+    "to reset it to default."
 })

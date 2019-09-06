@@ -58,7 +58,7 @@ def separate_sed(sed_string):
     return None
 
 
-@register(outgoing=True, pattern="^sed")
+@register(outgoing=True, pattern="^sed", ignore_unsafe=True)
 @errors_handler
 async def sed(command):
     """ For sed command, use sed on Telegram. """
@@ -103,7 +103,7 @@ async def sed(command):
 
 CMD_HELP.update({
     "sed":
-    "sed<delimiter><old word(s)><delimiter><new word(s)>\
-    \nUsage: Replaces a word or words using sed.\
-    \nDelimiters: `/, :, |, _`"
+    "sed<delimiter><old word(s)><delimiter><new word(s)>"
+    "\nUsage: Replaces a word or words using sed."
+    "\nDelimiters: `/, :, |, _`"
 })
